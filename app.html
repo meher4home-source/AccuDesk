@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AccuDesk Workspace</title><meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--ink:#0B1220;--g:#10B981;--gd:#047857;--bg:#F4F6F8;--rule:#E3E7EC;--m:#586174}
+*{box-sizing:border-box}body{margin:0;font:15px/1.5 'Instrument Sans',system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;margin:0;letter-spacing:-.015em}.hide{display:none!important}
+.w{max-width:1000px;margin:0 auto;padding:0 20px}.top{background:var(--ink);color:#fff}.top .w{display:flex;justify-content:space-between;align-items:center;padding:14px 20px}
+.logo{font:800 20px 'Bricolage Grotesque'}.logo i{color:var(--g);font-style:normal}
+.btn{background:var(--g);color:#04251B;border:0;border-radius:10px;padding:11px 18px;font:600 15px 'Instrument Sans';cursor:pointer;text-decoration:none;display:inline-block}
+.btn.d{background:var(--ink);color:#fff}.btn.s{padding:6px 11px;font-size:13px}.btn.o{background:none;color:inherit;border:1px solid currentColor}
+.auth{max-width:440px;margin:50px auto;padding:0 20px}.card{background:#fff;border:1px solid var(--rule);border-radius:16px;padding:22px;box-shadow:0 8px 28px rgba(11,18,32,.05)}
+label{display:block;font-weight:600;margin:12px 0 4px}input,select,textarea{width:100%;padding:11px 12px;border:1.5px solid var(--rule);border-radius:10px;font:inherit;background:#fff}
+.err{color:#B91C1C;font-weight:600;min-height:20px;margin-top:10px}.ok{color:var(--gd)}
+.tabs{display:flex;gap:6px;margin:22px 0 16px;flex-wrap:wrap}.tabs button{border:1.5px solid var(--rule);background:#fff;border-radius:99px;padding:8px 16px;font:600 14px inherit;font-family:inherit;cursor:pointer}.tabs .on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.banner{background:#ECFDF5;border:1px solid #A7F3D0;border-radius:12px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}.kpi{font:800 28px 'Bricolage Grotesque'}.kpi small{display:block;font:500 13px 'Instrument Sans';color:var(--m)}
+table{width:100%;border-collapse:collapse}td,th{padding:9px 6px;border-top:1px solid var(--rule);text-align:left}th{font-size:12px;color:var(--m);text-transform:uppercase;letter-spacing:.04em;border-top:0}td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}tr.t td{font-weight:700;border-top:2px solid var(--ink)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;align-items:end}.pill{font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px}.paid{background:#D1FAE5;color:#065F46}.unpaid{background:#FEF3C7;color:#92400E}
+@media print{.top,.tabs,.banner,.btn{display:none!important}body{background:#fff}}
+</style></head><body>
+<div id="auth" class="auth hide"><div class="logo" style="margin-bottom:16px;font-size:26px">Accu<i>Desk</i></div><div class="card"><h2 id="at">Start your 14-day free trial</h2>
+<form id="af" novalidate><div id="sf"><label for="nm">Your name</label><input id="nm"><label for="bz">Business name</label><input id="bz"></div>
+<label for="em">Email</label><input id="em" type="email" autocomplete="email"><label for="pw">Password (8+ characters)</label><input id="pw" type="password" autocomplete="current-password">
+<div class="err" id="ae" role="alert"></div><button class="btn" id="ab" style="width:100%;margin-top:6px">Create account</button></form>
+<p style="margin:14px 0 0"><a href="#" id="sw" style="color:var(--gd);font-weight:600">I already have an account</a></p></div></div>
+
+<div id="app" class="hide"><div class="top"><div class="w"><div class="logo">Accu<i>Desk</i></div><div><span id="who" style="margin-right:12px;color:#B9C3D6"></span><button class="btn o s" id="so">Sign out</button></div></div></div>
+<div class="w"><div class="banner" id="bn"></div><div class="tabs" id="tabs"></div><div id="pane"></div></div></div>
+
+<script>
+const SB_URL="https://YOUR-PROJECT.supabase.co",SB_KEY="YOUR_ANON_KEY",PAY={}; // PAY: {"Growth":"https://your-payment-link"}
+const sb=supabase.createClient(SB_URL,SB_KEY),$=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const CUR={in:"₹",us:"$",uk:"£",ca:"C$",au:"A$",ae:"AED ",sg:"S$",gl:"$"};
+const CI=["Owner capital","Loan received","Other income"],CO=["Rent","Salaries","Software","Marketing","Travel","Supplies","Taxes paid","Other expense"];
+let U,P,INV=[],ENT=[],tab="ov",signup=true;
+const cs=()=>CUR[P?.country]||"$",m=n=>cs()+(+n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}),today=()=>new Date().toISOString().slice(0,10);
+const wiz=()=>{try{return JSON.parse(localStorage.getItem("accudesk_wiz")||"{}")}catch{return{}}};
+function mode(s){signup=s;$("#sf").classList.toggle("hide",!s);$("#at").textContent=s?"Start your 14-day free trial":"Welcome back";$("#ab").textContent=s?"Create account":"Sign in";$("#sw").textContent=s?"I already have an account":"Create a new account";$("#ae").textContent=""}
+$("#sw").onclick=e=>{e.preventDefault();mode(!signup)};
+$("#af").onsubmit=async e=>{e.preventDefault();const er=$("#ae"),em=$("#em").value.trim(),pw=$("#pw").value;er.className="err";er.textContent="";
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)||pw.length<8){er.textContent="Enter a valid email and a password of 8+ characters.";return}
+$("#ab").disabled=true;let r;
+if(signup){if(!$("#nm").value.trim()||!$("#bz").value.trim()){er.textContent="Enter your name and business name.";$("#ab").disabled=false;return}const w=wiz();
+r=await sb.auth.signUp({email:em,password:pw,options:{data:{name:$("#nm").value.trim(),business:$("#bz").value.trim(),country:w.c||"gl",plan:w.plan||"Growth",problems:w.pb||[]}}});
+if(!r.error&&!r.data.session){er.className="err ok";er.textContent="Check your email to confirm, then sign in.";$("#ab").disabled=false;return}}
+else r=await sb.auth.signInWithPassword({email:em,password:pw});
+$("#ab").disabled=false;if(r.error){er.textContent=r.error.message;return}boot()};
+$("#so").onclick=async()=>{await sb.auth.signOut();location.reload()};
+async function boot(){const{data:{session}}=await sb.auth.getSession();if(!session){$("#auth").classList.remove("hide");$("#app").classList.add("hide");mode(location.hash!="#login"&&!localStorage.getItem("accudesk_seen"));return}
+U=session.user;localStorage.setItem("accudesk_seen","1");const[p,i,e]=await Promise.all([sb.from("profiles").select().eq("id",U.id).single(),sb.from("invoices").select().order("created_at",{ascending:false}),sb.from("entries").select().order("entry_date",{ascending:false})]);
+P=p.data||{};INV=i.data||[];ENT=e.data||[];$("#auth").classList.add("hide");$("#app").classList.remove("hide");$("#who").textContent=P.business||U.email;
+const left=Math.max(0,Math.ceil((new Date(P.trial_ends_at)-Date.now())/864e5)),pay=PAY[P.plan];
+$("#bn").innerHTML=P.status=="active"?`<span><b>${esc(P.plan)} plan active.</b> Thank you.</span>`:`<span><b>${left} days left</b> in your free trial. Pay yearly and get 2 months free.</span>${pay?`<a class="btn s" href="${esc(pay)}?prefilled_email=${encodeURIComponent(U.email)}">Activate ${esc(P.plan)}</a>`:""}`;
+$("#tabs").innerHTML=[["ov","Financial statements"],["inv","Invoices"],["cb","Cash book"]].map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join("");render()}
+$("#tabs").onclick=e=>{if(e.target.dataset.t){tab=e.target.dataset.t;render()}};
+function fin(){const rev=INV.reduce((s,x)=>s+ +x.subtotal,0),tax=INV.reduce((s,x)=>s+ +x.tax,0),rec=INV.filter(x=>x.status!="paid").reduce((s,x)=>s+ +x.total,0),sum=(t,c)=>ENT.filter(x=>x.type==t&&(!c||c.includes(x.category))).reduce((s,x)=>s+ +x.amount,0),
+oi=sum("in",["Other income"]),cap=sum("in",["Owner capital"]),loan=sum("in",["Loan received"]),exp=sum("out"),cash=sum("in")-exp;
+const ex={};ENT.filter(x=>x.type=="out").forEach(x=>ex[x.category]=(ex[x.category]||0)+ +x.amount);
+return{rev,tax,rec,oi,cap,loan,exp,cash,ex,np:rev+oi-exp}}
+function render(){[...$("#tabs").children].forEach(b=>b.classList.toggle("on",b.dataset.t==tab));$("#pane").innerHTML=tab=="ov"?ov():tab=="inv"?inv():cb();wire()}
+function ov(){const f=fin(),A=f.cash+f.rec,L=f.loan+f.tax,E=f.cap+f.np;
+return`<div class="grid"><div class="card"><div class="kpi">${m(f.np)}<small>Net profit</small></div></div><div class="card"><div class="kpi">${m(f.cash)}<small>Cash in hand</small></div></div><div class="card"><div class="kpi">${m(f.rec)}<small>Owed to you (unpaid invoices)</small></div></div></div>
+<div class="grid" style="margin-top:16px"><div class="card"><h3>Profit and loss</h3><table><tr><td>Sales (excl. tax)</td><td class="r">${m(f.rev)}</td></tr><tr><td>Other income</td><td class="r">${m(f.oi)}</td></tr>${Object.entries(f.ex).map(([k,v])=>`<tr><td>Less: ${esc(k)}</td><td class="r">(${m(v)})</td></tr>`).join("")}<tr class="t"><td>Net profit</td><td class="r">${m(f.np)}</td></tr></table></div>
+<div class="card"><h3>Balance sheet</h3><table><tr><th>Assets</th><th></th></tr><tr><td>Cash</td><td class="r">${m(f.cash)}</td></tr><tr><td>Receivables</td><td class="r">${m(f.rec)}</td></tr><tr class="t"><td>Total assets</td><td class="r">${m(A)}</td></tr>
+<tr><th style="padding-top:16px">Liabilities and equity</th><th></th></tr><tr><td>Loans</td><td class="r">${m(f.loan)}</td></tr><tr><td>Tax collected, to remit</td><td class="r">${m(f.tax)}</td></tr><tr><td>Owner capital</td><td class="r">${m(f.cap)}</td></tr><tr><td>Retained profit</td><td class="r">${m(f.np)}</td></tr><tr class="t"><td>Total</td><td class="r">${m(L+E)}</td></tr></table></div></div>
+<p style="margin-top:14px"><button class="btn d" onclick="print()">Print / save as PDF</button> <button class="btn o s" style="color:var(--ink)" id="exp">Export all data (JSON)</button></p>`}
+function inv(){return`<div class="card"><h3>New invoice</h3><div class="row"><div><label>Client</label><input id="ic"></div><div><label>Date</label><input id="id" type="date" value="${today()}"></div><div><label>Tax %</label><input id="it" type="number" value="0"></div></div>
+<label>Lines, one per row: description, qty, rate</label><textarea id="il" rows="3" placeholder="Monthly bookkeeping, 1, 500"></textarea><div class="err" id="ie"></div><button class="btn" id="isv">Create invoice</button></div>
+<div class="card" style="margin-top:16px"><h3>Invoices</h3>${INV.length?`<table><tr><th>No.</th><th>Client</th><th class="r">Total</th><th>Status</th><th></th></tr>${INV.map(x=>`<tr><td>${esc(x.number)}</td><td>${esc(x.client)}</td><td class="r">${m(x.total)}</td><td><span class="pill ${x.status}">${x.status}</span></td><td class="r">${x.status!="paid"?`<button class="btn s" data-pd="${x.id}">Mark paid</button> `:""}<button class="btn s d" data-pr="${x.id}">Print</button></td></tr>`).join("")}</table>`:"<p style='color:var(--m)'>No invoices yet.</p>"}</div>`}
+function cb(){return`<div class="card"><h3>New entry</h3><div class="row"><div><label>Date</label><input id="cd" type="date" value="${today()}"></div><div><label>Type</label><select id="ct"><option value="in">Money in</option><option value="out">Money out</option></select></div><div><label>Category</label><select id="cc"></select></div><div><label>Amount</label><input id="ca" type="number" step="0.01"></div></div><label>Note</label><input id="cn"><div class="err" id="ce"></div><button class="btn" id="csv">Add entry</button></div>
+<div class="card" style="margin-top:16px"><h3>Cash book</h3>${ENT.length?`<table><tr><th>Date</th><th>Category</th><th>Note</th><th class="r">In</th><th class="r">Out</th><th></th></tr>${ENT.map(x=>`<tr><td>${x.entry_date}</td><td>${esc(x.category)}</td><td>${esc(x.note)}</td><td class="r">${x.type=="in"?m(x.amount):""}</td><td class="r">${x.type=="out"?m(x.amount):""}</td><td class="r"><button class="btn s o" style="color:var(--m)" data-del="${x.id}">×</button></td></tr>`).join("")}</table>`:"<p style='color:var(--m)'>No entries yet.</p>"}</div>`}
+function wire(){const on=(s,f)=>{const e=$(s);if(e)e.onclick=f};
+const cat=()=>{if($("#ct"))$("#cc").innerHTML=($("#ct").value=="in"?CI:CO).map(c=>`<option>${c}</option>`).join("")};if($("#ct")){cat();$("#ct").onchange=cat}
+on("#exp",()=>{const u=URL.createObjectURL(new Blob([JSON.stringify({profile:P,invoices:INV,entries:ENT},null,2)],{type:"application/json"})),a=document.createElement("a");a.href=u;a.download="accudesk-data.json";a.click()});
+on("#csv",async()=>{const a=+$("#ca").value;if(!(a>0)){$("#ce").textContent="Enter an amount above zero.";return}const{error}=await sb.from("entries").insert({entry_date:$("#cd").value,type:$("#ct").value,category:$("#cc").value,amount:a,note:$("#cn").value.trim()});if(error){$("#ce").textContent=error.message;return}await boot()});
+on("#isv",async()=>{const it=$("#il").value.split("\n").map(l=>l.split(",").map(x=>x.trim())).filter(l=>l[0]&&+l[1]>0&&+l[2]>=0).map(l=>({d:l[0],q:+l[1],r:+l[2]}));if(!$("#ic").value.trim()||!it.length){$("#ie").textContent="Enter a client and at least one valid line.";return}
+const sub=it.reduce((s,x)=>s+x.q*x.r,0),rate=+$("#it").value||0,tax=sub*rate/100,{error}=await sb.from("invoices").insert({number:"INV-"+String(INV.length+1).padStart(4,"0"),client:$("#ic").value.trim(),issue_date:$("#id").value,items:it,tax_rate:rate,subtotal:sub,tax,total:sub+tax});if(error){$("#ie").textContent=error.message;return}await boot()});
+document.querySelectorAll("[data-pd]").forEach(b=>b.onclick=async()=>{const x=INV.find(i=>i.id==b.dataset.pd);await sb.from("invoices").update({status:"paid"}).eq("id",x.id);await sb.from("entries").insert({entry_date:today(),type:"in",category:"Invoice receipt",amount:x.total,note:x.number+" "+x.client,invoice_id:x.id});await boot()});
+document.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this entry?")){await sb.from("entries").delete().eq("id",b.dataset.del);await boot()}});
+document.querySelectorAll("[data-pr]").forEach(b=>b.onclick=()=>{const x=INV.find(i=>i.id==b.dataset.pr),w=open("","_blank");w.document.write(`<title>${esc(x.number)}</title><body style="font:15px system-ui;max-width:640px;margin:40px auto"><h1>Invoice ${esc(x.number)}</h1><p><b>${esc(P.business)}</b><br>Bill to: ${esc(x.client)}<br>Date: ${x.issue_date}</p><table style="width:100%;border-collapse:collapse">${x.items.map(i=>`<tr><td style="padding:8px;border-top:1px solid #ddd">${esc(i.d)}</td><td>${i.q} × ${m(i.r)}</td><td style="text-align:right">${m(i.q*i.r)}</td></tr>`).join("")}</table><p style="text-align:right">Subtotal ${m(x.subtotal)}<br>Tax (${x.tax_rate}%) ${m(x.tax)}<br><b>Total ${m(x.total)}</b></p>`);w.document.close();w.print()})}
+boot();
+</script></body></html>
