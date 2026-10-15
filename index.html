@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AccuDesk: accounting and compliance, set up around your business</title>
+<title>Ledgerline: accounting and compliance, set up around your business</title><meta name="description" content="Invoices, cash book, profit and loss and tax deadlines for small businesses in India, US, UK, Canada, Australia, UAE and Singapore. 14-day free trial."><meta property="og:title" content="Ledgerline: accounting set up around your business"><meta property="og:type" content="website">
 <meta name="description" content="Tell us your country and what you need. Get a personal accounting workspace with bookkeeping, GST, TDS, ROC, 1099 and sales tax support. 14-day free trial.">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -44,21 +44,21 @@ label{display:block;font-weight:600;margin:14px 0 5px}input,textarea{width:100%;
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 </style></head><body>
 
-<div id="landing"><div class="dark"><div class="w"><nav><div class="logo">Accu<i>Desk</i></div><span><a href="app.html#login" style="color:#fff;margin-right:16px">Sign in</a><button class="btn o" data-go="wiz">Start free trial</button></span></nav>
+<div id="landing"><div class="dark"><div class="w"><nav><div class="logo">Ledger<i>line</i></div><span><a href="app.html#login" style="color:#fff;margin-right:16px">Sign in</a><button class="btn o" data-go="wiz">Start free trial</button></span></nav>
 <div class="hero"><h1>Your accounts, set up <em>around your business.</em></h1>
 <p>Tell us your country and what is keeping you up at night. We build your workspace, your deadlines and your plan around it. Bookkeeping, GST, TDS, ROC, 1099 and sales tax, handled monthly.</p>
 <div class="b"><button class="btn" data-go="wiz">Start 14-day free trial</button><a class="btn o" id="wa" href="#">Talk on WhatsApp</a></div>
-<div class="trust"><span>No card needed</span><span>India and US ready</span><span>Export your data anytime</span></div></div></div></div>
+<div class="trust"><span>No card needed</span><span>7 countries supported</span><span>Export your data anytime</span></div></div></div></div>
 <div class="w"><div class="feats">
 <div class="feat"><h3>Built from your answers</h3><p>Pick your country and problems. Your dashboard shows only what applies to you.</p></div>
 <div class="feat"><h3>Deadlines on autopilot</h3><p>GST, TDS, PF/ESI, 1099 and sales tax dates, counted down for you.</p></div>
-<div class="feat"><h3>Qualified professionals</h3><p>Your books and filings are prepared by people, not templates.</p></div>
+<div class="feat"><h3>Books that balance themselves</h3><p>Invoices and cash entries flow into a live profit and loss and balance sheet.</p></div>
 <div class="feat"><h3>One simple monthly fee</h3><p>Pay yearly and get two months free. Cancel any time.</p></div></div></div></div>
 
-<div id="wiz" class="hide"><div class="top"><div class="w"><div class="logo">Accu<i>Desk</i></div><button class="btn o" style="padding:8px 14px" data-go="landing">Close</button></div></div>
+<div id="wiz" class="hide"><div class="top"><div class="w"><div class="logo">Ledger<i>line</i></div><button class="btn o" style="padding:8px 14px" data-go="landing">Close</button></div></div>
 <div class="wiz"><div class="prog"><div id="pg"></div></div><div id="step"></div></div></div>
 
-<div id="dash" class="hide"><div class="top"><div class="w"><div class="logo">Accu<i>Desk</i></div><div class="who"><span id="uname"></span><button id="out">Sign out</button></div></div></div>
+<div id="dash" class="hide"><div class="top"><div class="w"><div class="logo">Ledger<i>line</i></div><div class="who"><span id="uname"></span><button id="out">Sign out</button></div></div></div>
 <div class="dark dh"><div class="w"><h1 id="hi"></h1><p id="hs"></p></div></div>
 <div class="w"><div class="dg"><div class="stack" id="main"></div><div class="stack" id="side"></div></div></div></div>
 
@@ -70,14 +70,14 @@ const PB={in:[["gst","GST return filing (GSTR-1 / 3B)"],["tds","TDS return, Form
 us:[["w2","1099 / W-2 prep"],["st","Sales tax returns"],["bk","Monthly bookkeeping and close"],["pr","Payroll sheets and quarterly reports"],["fm","Startup financial model"]],
 uk:[["vat","VAT returns (MTD)"],["bk","Monthly bookkeeping and close"],["pr","Payroll and RTI reports"],["fm","Startup financial model"],["lp","Landing page and booking form"]],gl:[["bk","Monthly bookkeeping"],["fm","Startup financial model"],["pr","Payroll sheets"],["lp","Landing page and booking form"]]};
 PB.ca=PB.au=PB.ae=PB.sg=PB.gl;
-const PL=[{n:"Starter",p:{in:4999,us:149,uk:129,ca:199,au:199,ae:549,sg:199,gl:149},d:"Up to 100 entries a month. P&L and balance sheet."},{n:"Growth",p:{in:9999,us:349,uk:299,ca:449,au:449,ae:1299,sg:449,gl:349},d:"Up to 400 entries. MIS, cash flow, tax return prep."},{n:"Compliance Suite",p:{in:14999,us:599,uk:499,ca:749,au:749,ae:2199,sg:749,gl:599},d:"Everything, plus payroll and statutory filings. Priority support."}];
+const PL=[{n:"Starter",p:{in:499,us:19,uk:15,ca:25,au:29,ae:69,sg:25,gl:19},d:"Invoices, cash book, P&L and balance sheet. Up to 100 entries a month."},{n:"Growth",p:{in:1499,us:49,uk:39,ca:65,au:75,ae:179,sg:65,gl:49},d:"Up to 1,000 entries a month, deadline reminders, full data export."},{n:"Firm",p:{in:4999,us:149,uk:119,ca:199,au:229,ae:549,sg:199,gl:149},d:"Unlimited entries. Multi-client workspaces (early access)."}];
 const TASK={vat:["Share your VAT number and Gateway access","Upload sales and purchase invoices","Approve the VAT return before submission"],gst:["Share your GSTIN and portal access","Upload sales and purchase invoices by the 5th","Review the draft GSTR-1 and GSTR-3B"],tds:["Share TAN and deductee list","Upload payment challans","Approve the quarterly TDS return"],bk:["Connect or upload your bank statements","Share last 3 months of invoices and bills","Review your first monthly P&L"],itr:["Share PAN and last year's return","Upload books, bank and tax statements","Approve the computation before filing"],roc:["Share CIN and last balance sheet","Upload board and AGM details","Approve annual forms before filing"],pf:["Share the employee list and salary sheet","Confirm monthly attendance","Approve PF/ESI challans"],fm:["Share your business model and target market","Provide current numbers, if any","Review the 3-year projection draft"],w2:["Collect W-9s from contractors","Share payment totals by payee","Approve forms before filing"],st:["Share states where you collect tax","Upload monthly sales reports","Approve each return before filing"],pr:["Share the employee roster and pay rates","Upload hours or pay run data","Review quarterly payroll reports"],lp:["Share your brand, offer and contact details","Approve the page draft","Connect the booking form"]};
 const CAL={gst:[["GSTR-1 due","m",11],["GSTR-3B due","m",20]],tds:[["TDS deposit due","m",7]],pf:[["PF/ESI due","m",15]],w2:[["1099-NEC / W-2 due","y",[[1,31]]]],st:[["Sales tax return (most states)","m",20]],pr:[["Form 941 due","y",[[1,31],[4,30],[7,31],[10,31]]]],itr:[["ITR due date (non-audit)","y",[[7,31]]]]};
-const KEY="accudesk";let S=JSON.parse(localStorage.getItem(KEY)||"{}"),W={step:0,c:null,pb:[],plan:null};
+const KEY="ledgerline";let S=JSON.parse(localStorage.getItem(KEY)||"{}"),W={step:0,c:null,pb:[],plan:null};
 const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
 function view(v){["landing","wiz","dash"].forEach(x=>$("#"+x).classList.toggle("hide",x!=v));scrollTo(0,0);if(v=="wiz"){W={step:0,c:null,pb:[],plan:null};step()}if(v=="dash")dash()}
 document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(g)view(g.dataset.go)});
-if(CFG.whatsapp.includes("XXXX"))$("#wa").classList.add("hide");$("#wa").href="https://wa.me/"+CFG.whatsapp+"?text="+encodeURIComponent("Hi, I want to know about AccuDesk");
+if(CFG.whatsapp.includes("XXXX"))$("#wa").classList.add("hide");$("#wa").href="https://wa.me/"+CFG.whatsapp+"?text="+encodeURIComponent("Hi, I want to know about Ledgerline");
 const rec=n=>n<=1?0:n<=3?1:2;
 function step(){const st=W.step;$("#pg").style.width=(st+1)*25+"%";let h="";
 if(st==0){h=`<h2>Where is your business based?</h2><p class="sub">We'll set up the right filings, currency and deadlines.</p><div class="opts">${Object.entries(C).map(([k,v])=>`<button class="opt ${W.c==k?"on":""}" data-c="${k}"><b>${v.n}</b><span class="tick">✓</span></button>`).join("")}</div>`}
@@ -91,7 +91,7 @@ if(d.c){W.c=d.c;W.pb=[];W.plan=null}if(d.p){const i=W.pb.indexOf(d.p);i<0?W.pb.p
 const y=scrollY;step();scrollTo(0,y)});
 async function next(){const st=W.step;if(st==0&&!W.c)return;if(st==1&&!W.pb.length){alert("Choose at least one service.");return}
 if(st<3){W.step++;step();return}
-localStorage.setItem("accudesk_wiz",JSON.stringify({c:W.c,pb:W.pb,plan:PL[W.plan].n}));location.href="app.html"}
+localStorage.setItem("ledgerline_wiz",JSON.stringify({c:W.c,pb:W.pb,plan:PL[W.plan].n}));location.href="app.html"}
 function nextDate(ev){const t=new Date();t.setHours(0,0,0,0);let c=[];const y=t.getFullYear();
 if(ev[1]=="m"){for(let m=0;m<2;m++)c.push(new Date(y,t.getMonth()+m,ev[2]))}else{for(const yy of[y,y+1])for(const[m,d]of ev[2])c.push(new Date(yy,m-1,d))}
 return c.filter(x=>x>=t).sort((a,b)=>a-b)[0]}
@@ -107,7 +107,7 @@ $("#side").innerHTML=`<div class="card"><h3>Upcoming deadlines</h3>${ev.length?e
 <div class="card tool"><h3>Tax calculator</h3><div class="r"><div><label style="margin-top:0">Amount</label><input id="ta" type="number" value="10000"></div><div><label style="margin-top:0">Tax rate %</label><input id="tr" type="number" value="${S.c=="in"?18:7}"></div></div><label>Amount is</label><select id="tk" style="width:100%;padding:12px;border:1.5px solid var(--rule);border-radius:12px;font:inherit"><option>before tax</option><option>including tax</option></select><div class="o" id="to"></div></div>
 <div class="card"><h3>Your data is yours</h3><p style="color:var(--m);margin:0 0 12px">Download everything we hold for your workspace at any time.</p><button class="btn d" id="ex">Export my data</button></div>`;
 const calc=()=>{const a=+$("#ta").value,r=+$("#tr").value/100,inc=$("#tk").value[0]=="i",b=inc?a/(1+r):a;$("#to").innerHTML=`Base ${c.s}${b.toFixed(2)}<br>Tax ${c.s}${(b*r).toFixed(2)}<br><b>Total ${c.s}${(b*(1+r)).toFixed(2)}</b>`};$(".tool").oninput=calc;calc();
-$("#ex").onclick=()=>{const u=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:"application/json"})),a=document.createElement("a");a.href=u;a.download="accudesk-data.json";a.click()};
+$("#ex").onclick=()=>{const u=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:"application/json"})),a=document.createElement("a");a.href=u;a.download="ledgerline-data.json";a.click()};
 const act=$("#act");if(act)act.href="https://wa.me/"+CFG.whatsapp+"?text="+encodeURIComponent("I want to activate the "+S.plan+" plan for "+S.biz)}
 $("#main").addEventListener("change",e=>{const t=e.target.dataset.t;if(!t)return;S.done[t]=e.target.checked;save();dash()});
 $("#out").onclick=()=>{localStorage.removeItem(KEY);S={};view("landing")};

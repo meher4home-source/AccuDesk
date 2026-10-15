@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AccuDesk Workspace</title><meta name="robots" content="noindex">
+<title>Ledgerline Workspace</title><meta name="robots" content="noindex">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
@@ -21,13 +21,13 @@ table{width:100%;border-collapse:collapse}td,th{padding:9px 6px;border-top:1px s
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;align-items:end}.pill{font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px}.paid{background:#D1FAE5;color:#065F46}.unpaid{background:#FEF3C7;color:#92400E}
 @media print{.top,.tabs,.banner,.btn{display:none!important}body{background:#fff}}
 </style></head><body>
-<div id="auth" class="auth hide"><div class="logo" style="margin-bottom:16px;font-size:26px">Accu<i>Desk</i></div><div class="card"><h2 id="at">Start your 14-day free trial</h2>
+<div id="auth" class="auth hide"><div class="logo" style="margin-bottom:16px;font-size:26px">Ledger<i>line</i></div><div class="card"><h2 id="at">Start your 14-day free trial</h2>
 <form id="af" novalidate><div id="sf"><label for="nm">Your name</label><input id="nm"><label for="bz">Business name</label><input id="bz"></div>
 <label for="em">Email</label><input id="em" type="email" autocomplete="email"><label for="pw">Password (8+ characters)</label><input id="pw" type="password" autocomplete="current-password">
 <div class="err" id="ae" role="alert"></div><button class="btn" id="ab" style="width:100%;margin-top:6px">Create account</button></form>
 <p style="margin:14px 0 0"><a href="#" id="sw" style="color:var(--gd);font-weight:600">I already have an account</a></p></div></div>
 
-<div id="app" class="hide"><div class="top"><div class="w"><div class="logo">Accu<i>Desk</i></div><div><span id="who" style="margin-right:12px;color:#B9C3D6"></span><button class="btn o s" id="so">Sign out</button></div></div></div>
+<div id="app" class="hide"><div class="top"><div class="w"><div class="logo">Ledger<i>line</i></div><div><span id="who" style="margin-right:12px;color:#B9C3D6"></span><button class="btn o s" id="so">Sign out</button></div></div></div>
 <div class="w"><div class="banner" id="bn"></div><div class="tabs" id="tabs"></div><div id="pane"></div></div></div>
 
 <script>
@@ -37,7 +37,7 @@ const CUR={in:"₹",us:"$",uk:"£",ca:"C$",au:"A$",ae:"AED ",sg:"S$",gl:"$"};
 const CI=["Owner capital","Loan received","Other income"],CO=["Rent","Salaries","Software","Marketing","Travel","Supplies","Taxes paid","Other expense"];
 let U,P,INV=[],ENT=[],tab="ov",signup=true;
 const cs=()=>CUR[P?.country]||"$",m=n=>cs()+(+n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}),today=()=>new Date().toISOString().slice(0,10);
-const wiz=()=>{try{return JSON.parse(localStorage.getItem("accudesk_wiz")||"{}")}catch{return{}}};
+const wiz=()=>{try{return JSON.parse(localStorage.getItem("ledgerline_wiz")||"{}")}catch{return{}}};
 function mode(s){signup=s;$("#sf").classList.toggle("hide",!s);$("#at").textContent=s?"Start your 14-day free trial":"Welcome back";$("#ab").textContent=s?"Create account":"Sign in";$("#sw").textContent=s?"I already have an account":"Create a new account";$("#ae").textContent=""}
 $("#sw").onclick=e=>{e.preventDefault();mode(!signup)};
 $("#af").onsubmit=async e=>{e.preventDefault();const er=$("#ae"),em=$("#em").value.trim(),pw=$("#pw").value;er.className="err";er.textContent="";
@@ -49,8 +49,8 @@ if(!r.error&&!r.data.session){er.className="err ok";er.textContent="Check your e
 else r=await sb.auth.signInWithPassword({email:em,password:pw});
 $("#ab").disabled=false;if(r.error){er.textContent=r.error.message;return}boot()};
 $("#so").onclick=async()=>{await sb.auth.signOut();location.reload()};
-async function boot(){const{data:{session}}=await sb.auth.getSession();if(!session){$("#auth").classList.remove("hide");$("#app").classList.add("hide");mode(location.hash!="#login"&&!localStorage.getItem("accudesk_seen"));return}
-U=session.user;localStorage.setItem("accudesk_seen","1");const[p,i,e]=await Promise.all([sb.from("profiles").select().eq("id",U.id).single(),sb.from("invoices").select().order("created_at",{ascending:false}),sb.from("entries").select().order("entry_date",{ascending:false})]);
+async function boot(){const{data:{session}}=await sb.auth.getSession();if(!session){$("#auth").classList.remove("hide");$("#app").classList.add("hide");mode(location.hash!="#login"&&!localStorage.getItem("ledgerline_seen"));return}
+U=session.user;localStorage.setItem("ledgerline_seen","1");const[p,i,e]=await Promise.all([sb.from("profiles").select().eq("id",U.id).single(),sb.from("invoices").select().order("created_at",{ascending:false}),sb.from("entries").select().order("entry_date",{ascending:false})]);
 P=p.data||{};INV=i.data||[];ENT=e.data||[];$("#auth").classList.add("hide");$("#app").classList.remove("hide");$("#who").textContent=P.business||U.email;
 const left=Math.max(0,Math.ceil((new Date(P.trial_ends_at)-Date.now())/864e5)),pay=PAY[P.plan];
 $("#bn").innerHTML=P.status=="active"?`<span><b>${esc(P.plan)} plan active.</b> Thank you.</span>`:`<span><b>${left} days left</b> in your free trial. Pay yearly and get 2 months free.</span>${pay?`<a class="btn s" href="${esc(pay)}?prefilled_email=${encodeURIComponent(U.email)}">Activate ${esc(P.plan)}</a>`:""}`;
@@ -74,7 +74,7 @@ function cb(){return`<div class="card"><h3>New entry</h3><div class="row"><div><
 <div class="card" style="margin-top:16px"><h3>Cash book</h3>${ENT.length?`<table><tr><th>Date</th><th>Category</th><th>Note</th><th class="r">In</th><th class="r">Out</th><th></th></tr>${ENT.map(x=>`<tr><td>${x.entry_date}</td><td>${esc(x.category)}</td><td>${esc(x.note)}</td><td class="r">${x.type=="in"?m(x.amount):""}</td><td class="r">${x.type=="out"?m(x.amount):""}</td><td class="r"><button class="btn s o" style="color:var(--m)" data-del="${x.id}">×</button></td></tr>`).join("")}</table>`:"<p style='color:var(--m)'>No entries yet.</p>"}</div>`}
 function wire(){const on=(s,f)=>{const e=$(s);if(e)e.onclick=f};
 const cat=()=>{if($("#ct"))$("#cc").innerHTML=($("#ct").value=="in"?CI:CO).map(c=>`<option>${c}</option>`).join("")};if($("#ct")){cat();$("#ct").onchange=cat}
-on("#exp",()=>{const u=URL.createObjectURL(new Blob([JSON.stringify({profile:P,invoices:INV,entries:ENT},null,2)],{type:"application/json"})),a=document.createElement("a");a.href=u;a.download="accudesk-data.json";a.click()});
+on("#exp",()=>{const u=URL.createObjectURL(new Blob([JSON.stringify({profile:P,invoices:INV,entries:ENT},null,2)],{type:"application/json"})),a=document.createElement("a");a.href=u;a.download="ledgerline-data.json";a.click()});
 on("#csv",async()=>{const a=+$("#ca").value;if(!(a>0)){$("#ce").textContent="Enter an amount above zero.";return}const{error}=await sb.from("entries").insert({entry_date:$("#cd").value,type:$("#ct").value,category:$("#cc").value,amount:a,note:$("#cn").value.trim()});if(error){$("#ce").textContent=error.message;return}await boot()});
 on("#isv",async()=>{const it=$("#il").value.split("\n").map(l=>l.split(",").map(x=>x.trim())).filter(l=>l[0]&&+l[1]>0&&+l[2]>=0).map(l=>({d:l[0],q:+l[1],r:+l[2]}));if(!$("#ic").value.trim()||!it.length){$("#ie").textContent="Enter a client and at least one valid line.";return}
 const sub=it.reduce((s,x)=>s+x.q*x.r,0),rate=+$("#it").value||0,tax=sub*rate/100,{error}=await sb.from("invoices").insert({number:"INV-"+String(INV.length+1).padStart(4,"0"),client:$("#ic").value.trim(),issue_date:$("#id").value,items:it,tax_rate:rate,subtotal:sub,tax,total:sub+tax});if(error){$("#ie").textContent=error.message;return}await boot()});
