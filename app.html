@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en"><head><meta charset="utf-8"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="theme-color" content="#0B1220"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ledgerline Workspace</title><meta name="robots" content="noindex">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -21,13 +21,13 @@ table{width:100%;border-collapse:collapse}td,th{padding:9px 6px;border-top:1px s
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;align-items:end}.pill{font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px}.paid{background:#D1FAE5;color:#065F46}.unpaid{background:#FEF3C7;color:#92400E}
 @media print{.top,.tabs,.banner,.btn{display:none!important}body{background:#fff}}
 </style></head><body>
-<div id="auth" class="auth hide"><div class="logo" style="margin-bottom:16px;font-size:26px">Ledger<i>line</i></div><div class="card"><h2 id="at">Start your 14-day free trial</h2>
+<div id="auth" class="auth hide"><div class="logo" style="margin-bottom:16px;font-size:26px"><img src="/logo.svg" alt="" width="26" height="26" style="vertical-align:-5px;margin-right:6px">Ledger<i>line</i></div><div class="card"><h2 id="at">Start your 14-day free trial</h2>
 <form id="af" novalidate><div id="sf"><label for="nm">Your name</label><input id="nm"><label for="bz">Business name</label><input id="bz"></div>
-<label for="em">Email</label><input id="em" type="email" autocomplete="email"><label for="pw">Password (8+ characters)</label><input id="pw" type="password" autocomplete="current-password">
+<div id="ew"><label for="em">Email</label><input id="em" type="email" autocomplete="email"></div><label for="pw">Password (8+ characters)</label><div style="position:relative"><input id="pw" type="password" autocomplete="current-password" style="padding-right:64px"><button type="button" id="eye" aria-label="Show password" style="position:absolute;right:6px;top:6px;border:0;background:none;color:var(--gd);font-weight:600;font-size:13px;cursor:pointer;padding:6px">Show</button></div>
 <div class="err" id="ae" role="alert"></div><button class="btn" id="ab" style="width:100%;margin-top:6px">Create account</button></form>
-<p style="margin:14px 0 0"><a href="#" id="sw" style="color:var(--gd);font-weight:600">I already have an account</a></p></div></div>
+<button type="button" class="btn d" id="gg" style="width:100%;margin-top:12px">Continue with Google</button><p style="margin:14px 0 0"><a href="#" id="fp" style="color:var(--m);float:right">Forgot password?</a><a href="#" id="sw" style="color:var(--gd);font-weight:600">I already have an account</a></p><p style="font-size:12px;color:var(--m);margin:12px 0 0">By continuing you agree to the <a href="terms">Terms</a> and <a href="privacy">Privacy Policy</a>.</p></div></div>
 
-<div id="app" class="hide"><div class="top"><div class="w"><div class="logo">Ledger<i>line</i></div><div><span id="who" style="margin-right:12px;color:#B9C3D6"></span><button class="btn o s" id="so">Sign out</button></div></div></div>
+<div id="app" class="hide"><div class="top"><div class="w"><div class="logo"><img src="/logo-light.svg" alt="" width="26" height="26" style="vertical-align:-5px;margin-right:6px">Ledger<i>line</i></div><div><span id="who" style="margin-right:12px;color:#B9C3D6"></span><button class="btn o s" id="so">Sign out</button></div></div></div>
 <div class="w"><div class="banner" id="bn"></div><div class="tabs" id="tabs"></div><div id="pane"></div></div></div>
 
 <script>
@@ -40,7 +40,13 @@ const cs=()=>CUR[P?.country]||"$",m=n=>cs()+(+n||0).toLocaleString("en-US",{mini
 const wiz=()=>{try{return JSON.parse(localStorage.getItem("ledgerline_wiz")||"{}")}catch{return{}}};
 function mode(s){signup=s;$("#sf").classList.toggle("hide",!s);$("#at").textContent=s?"Start your 14-day free trial":"Welcome back";$("#ab").textContent=s?"Create account":"Sign in";$("#sw").textContent=s?"I already have an account":"Create a new account";$("#ae").textContent=""}
 $("#sw").onclick=e=>{e.preventDefault();mode(!signup)};
+let rec=false;
+$("#eye").onclick=()=>{const p=$("#pw"),h=p.type=="password";p.type=h?"text":"password";$("#eye").textContent=h?"Hide":"Show"};
+$("#gg").onclick=()=>sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname}});
+$("#fp").onclick=async e=>{e.preventDefault();const er=$("#ae"),em=$("#em").value.trim();if(!em){er.className="err";er.textContent="Enter your email first.";return}await sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+location.pathname});er.className="err ok";er.textContent="If that email has an account, a reset link is on its way."};
+sb.auth.onAuthStateChange(ev=>{if(ev=="PASSWORD_RECOVERY"){rec=true;$("#auth").classList.remove("hide");$("#app").classList.add("hide");["#sf","#ew","#gg","#fp","#sw"].forEach(x=>$(x).classList.add("hide"));$("#at").textContent="Set a new password";$("#ab").textContent="Update password"}});
 $("#af").onsubmit=async e=>{e.preventDefault();const er=$("#ae"),em=$("#em").value.trim(),pw=$("#pw").value;er.className="err";er.textContent="";
+if(rec){if(pw.length<8){er.textContent="Use 8 or more characters.";return}const u=await sb.auth.updateUser({password:pw});if(u.error){er.textContent=u.error.message;return}rec=false;location.href=location.pathname;return}
 if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)||pw.length<8){er.textContent="Enter a valid email and a password of 8+ characters.";return}
 $("#ab").disabled=true;let r;
 if(signup){if(!$("#nm").value.trim()||!$("#bz").value.trim()){er.textContent="Enter your name and business name.";$("#ab").disabled=false;return}const w=wiz();
@@ -49,11 +55,11 @@ if(!r.error&&!r.data.session){er.className="err ok";er.textContent="Check your e
 else r=await sb.auth.signInWithPassword({email:em,password:pw});
 $("#ab").disabled=false;if(r.error){er.textContent=r.error.message;return}boot()};
 $("#so").onclick=async()=>{await sb.auth.signOut();location.reload()};
-async function boot(){const{data:{session}}=await sb.auth.getSession();if(!session){$("#auth").classList.remove("hide");$("#app").classList.add("hide");mode(location.hash!="#login"&&!localStorage.getItem("ledgerline_seen"));return}
+async function boot(){const{data:{session}}=await sb.auth.getSession();if(rec)return;if(!session){$("#auth").classList.remove("hide");$("#app").classList.add("hide");mode(location.hash!="#login"&&!localStorage.getItem("ledgerline_seen"));return}
 U=session.user;localStorage.setItem("ledgerline_seen","1");const[p,i,e]=await Promise.all([sb.from("profiles").select().eq("id",U.id).single(),sb.from("invoices").select().order("created_at",{ascending:false}),sb.from("entries").select().order("entry_date",{ascending:false})]);
-P=p.data||{};INV=i.data||[];ENT=e.data||[];$("#auth").classList.add("hide");$("#app").classList.remove("hide");$("#who").textContent=P.business||U.email;
-const left=Math.max(0,Math.ceil((new Date(P.trial_ends_at)-Date.now())/864e5)),pay=PAY[P.plan];
-$("#bn").innerHTML=P.status=="active"?`<span><b>${esc(P.plan)} plan active.</b> Thank you.</span>`:`<span><b>${left} days left</b> in your free trial. Pay yearly and get 2 months free.</span>${pay?`<a class="btn s" href="${esc(pay)}?prefilled_email=${encodeURIComponent(U.email)}">Activate ${esc(P.plan)}</a>`:""}`;
+P=p.data||{};INV=i.data||[];ENT=e.data||[];if(P.id&&!P.country){const w=wiz();await sb.rpc("set_prefs",{c:w.c||"gl",p:w.plan||"Growth"});P.country=w.c||"gl";P.plan=P.plan||w.plan||"Growth"}$("#auth").classList.add("hide");$("#app").classList.remove("hide");$("#who").textContent=P.business||U.email;
+const left=Math.max(0,Math.ceil((new Date(P.trial_ends_at)-Date.now())/864e5)),pay=PAY[P.plan],co=u=>{try{const x=new URL(u);x.searchParams.set("email",U.email);return x.href}catch{return u}};
+$("#bn").innerHTML=P.status=="active"?`<span><b>${esc(P.plan)} plan active.</b> Thank you.</span>`:`<span>${left?`<b>${left} days left</b> in your free trial.`:`<b>Your trial has ended.</b> Activate to keep adding data.`} Use the same email (${esc(U.email)}) at checkout.</span>${pay?`<a class="btn s" href="${esc(co(pay))}">Activate ${esc(P.plan)}</a>`:""}`;
 $("#tabs").innerHTML=[["ov","Financial statements"],["inv","Invoices"],["cb","Cash book"]].map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join("");render()}
 $("#tabs").onclick=e=>{if(e.target.dataset.t){tab=e.target.dataset.t;render()}};
 function fin(){const rev=INV.reduce((s,x)=>s+ +x.subtotal,0),tax=INV.reduce((s,x)=>s+ +x.tax,0),rec=INV.filter(x=>x.status!="paid").reduce((s,x)=>s+ +x.total,0),sum=(t,c)=>ENT.filter(x=>x.type==t&&(!c||c.includes(x.category))).reduce((s,x)=>s+ +x.amount,0),

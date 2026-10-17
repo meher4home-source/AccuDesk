@@ -1,7 +1,8 @@
-# Ledgerline: deploy in 4 steps (all free tiers)
-1. **Supabase**: new project, run `schema.sql` in SQL Editor, enable Auth > Email. Copy Project URL + anon key.
-2. **app.html**: replace `SB_URL` and `SB_KEY` (anon key only, never the service key). Put payment links in `PAY`, keyed by plan name (Starter, Growth, Firm).
-3. **Vercel**: import this folder (or `vercel deploy`). Env vars: `RAZORPAY_WEBHOOK_SECRET`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`.
-4. **Razorpay**: webhook URL `https://YOURDOMAIN.com/api/webhook`, events `payment.captured`, `subscription.charged`.
-Also: set WhatsApp number in `index.html` (CFG), replace YOURDOMAIN.com in robots.txt/sitemap.xml, add Terms/Privacy pages before taking payments.
-Note: webhook handles Razorpay only. Other gateways need their own signature check.
+# Ledgerline: deploy checklist (free tiers)
+1. **Supabase**: new project, run `schema.sql`, enable Auth > Email. Set `SB_URL`, `SB_KEY` (anon key only) in `app.html`.
+2. **Google login**: Google Cloud Console > OAuth client (Web). Redirect URI = the callback shown in Supabase > Auth > Providers > Google. Paste Client ID/Secret there. Add your site URL under Auth > URL Configuration.
+3. **Email**: Supabase built-in email is heavily rate-limited. Add free SMTP (Resend) in Auth > SMTP before launch.
+4. **Vercel**: import this folder. Env vars: `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `DODO_WEBHOOK_SECRET` (and `RAZORPAY_WEBHOOK_SECRET` if used).
+5. **Dodo Payments**: create 3 subscription products (Starter, Growth, Firm), copy each checkout link into `PAY` in `app.html`. Webhook URL `https://YOURDOMAIN.com/api/dodo-webhook`, events `payment.succeeded`, `subscription.active`, `subscription.cancelled`. Send a test event from Dodo and confirm `profiles.status` changes.
+6. Replace WhatsApp number (`index.html`), `YOURDOMAIN.com` (robots/sitemap), and the [brackets] in `terms.html`/`privacy.html`.
+Security: never put the service key in HTML. Writes stop after the trial unless `status='active'` (enforced in the database).
