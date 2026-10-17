@@ -28,13 +28,21 @@ create policy "own profile read"  on public.profiles for select using (id = auth
 -- no update policy on profiles: status is changed only by the webhook (service key)
 create or replace function public.can_write() returns boolean language sql security definer stable set search_path=public as $$
   select exists(select 1 from public.profiles where id=auth.uid() and (status='active' or trial_ends_at>now())) $$;
+drop policy if exists "inv read" on public.invoices;
 create policy "inv read" on public.invoices for select using (user_id=auth.uid());
+drop policy if exists "inv write" on public.invoices;
 create policy "inv write" on public.invoices for insert with check (user_id=auth.uid() and public.can_write());
+drop policy if exists "inv edit" on public.invoices;
 create policy "inv edit" on public.invoices for update using (user_id=auth.uid());
+drop policy if exists "inv del" on public.invoices;
 create policy "inv del" on public.invoices for delete using (user_id=auth.uid());
+drop policy if exists "ent read" on public.entries;
 create policy "ent read" on public.entries for select using (user_id=auth.uid());
+drop policy if exists "ent write" on public.entries;
 create policy "ent write" on public.entries for insert with check (user_id=auth.uid() and public.can_write());
+drop policy if exists "ent edit" on public.entries;
 create policy "ent edit" on public.entries for update using (user_id=auth.uid());
+drop policy if exists "ent del" on public.entries;
 create policy "ent del" on public.entries for delete using (user_id=auth.uid());
 -- lets Google sign-ups store country/plan once, without ever touching status
 create or replace function public.set_prefs(c text,p text) returns void language sql security definer set search_path=public as $$

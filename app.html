@@ -55,7 +55,7 @@ if(!r.error&&!r.data.session){er.className="err ok";er.textContent="Check your e
 else r=await sb.auth.signInWithPassword({email:em,password:pw});
 $("#ab").disabled=false;if(r.error){er.textContent=r.error.message;return}boot()};
 $("#so").onclick=async()=>{await sb.auth.signOut();location.reload()};
-async function boot(){const{data:{session}}=await sb.auth.getSession();if(rec)return;if(!session){$("#auth").classList.remove("hide");$("#app").classList.add("hide");mode(location.hash!="#login"&&!localStorage.getItem("ledgerline_seen"));return}
+async function boot(){if(SB_URL.includes("YOUR-PROJECT")){document.body.innerHTML="<p style='padding:40px;font:16px system-ui'>Ledgerline is not configured yet. Set SB_URL and SB_KEY in app.html.</p>";return}const{data:{session}}=await sb.auth.getSession();if(rec)return;if(!session){$("#auth").classList.remove("hide");$("#app").classList.add("hide");mode(location.hash!="#login"&&!localStorage.getItem("ledgerline_seen"));return}
 U=session.user;localStorage.setItem("ledgerline_seen","1");const[p,i,e]=await Promise.all([sb.from("profiles").select().eq("id",U.id).single(),sb.from("invoices").select().order("created_at",{ascending:false}),sb.from("entries").select().order("entry_date",{ascending:false})]);
 P=p.data||{};INV=i.data||[];ENT=e.data||[];if(P.id&&!P.country){const w=wiz();await sb.rpc("set_prefs",{c:w.c||"gl",p:w.plan||"Growth"});P.country=w.c||"gl";P.plan=P.plan||w.plan||"Growth"}$("#auth").classList.add("hide");$("#app").classList.remove("hide");$("#who").textContent=P.business||U.email;
 const left=Math.max(0,Math.ceil((new Date(P.trial_ends_at)-Date.now())/864e5)),pay=PAY[P.plan],co=u=>{try{const x=new URL(u);x.searchParams.set("email",U.email);return x.href}catch{return u}};

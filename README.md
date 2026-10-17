@@ -6,3 +6,8 @@
 5. **Dodo Payments**: create 3 subscription products (Starter, Growth, Firm), copy each checkout link into `PAY` in `app.html`. Webhook URL `https://YOURDOMAIN.com/api/dodo-webhook`, events `payment.succeeded`, `subscription.active`, `subscription.cancelled`. Send a test event from Dodo and confirm `profiles.status` changes.
 6. Replace WhatsApp number (`index.html`), `YOURDOMAIN.com` (robots/sitemap), and the [brackets] in `terms.html`/`privacy.html`.
 Security: never put the service key in HTML. Writes stop after the trial unless `status='active'` (enforced in the database).
+
+## Vercel notes
+- Import with Framework Preset **Other** (not Node). Do not pin a Node version; the project default is used.
+- Push the *contents* of this folder to the repo root (index.html must be at the top level).
+- Vercel Hobby is for non-commercial use. Move to Pro (or Cloudflare Pages) before you charge customers.
